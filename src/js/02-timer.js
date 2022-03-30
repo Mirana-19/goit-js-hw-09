@@ -36,18 +36,23 @@ const refs = {
 refs.startBtn.addEventListener('click', handleTimer);
 
 function handleTimer() {
-  const intervalId = setInterval(() => {
+  const startTimer = setInterval(() => {
     const deltaTime = pickedDate - Date.now();
     const timeLeft = convertMs(deltaTime);
+
     updateTimer(timeLeft);
   }, 1000);
 }
 
 function updateTimer({ days, hours, minutes, seconds }) {
-  refs.daysTimer.textContent = days;
-  refs.hoursTimer.textContent = hours;
-  refs.minutesTimer.textContent = minutes;
-  refs.secondsTimer.textContent = seconds;
+  refs.daysTimer.textContent = addLeadingZero(days);
+  refs.hoursTimer.textContent = addLeadingZero(hours);
+  refs.minutesTimer.textContent = addLeadingZero(minutes);
+  refs.secondsTimer.textContent = addLeadingZero(seconds);
+}
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, 0);
 }
 
 function convertMs(ms) {
