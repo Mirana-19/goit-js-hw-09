@@ -10,6 +10,7 @@ const refs = {
 refs.startBtn.addEventListener('click', () => {
   changeBgColor.start();
 });
+
 refs.stopBtn.addEventListener('click', () => {
   changeBgColor.stop();
 });

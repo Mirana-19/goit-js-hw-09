@@ -9,26 +9,29 @@ const refs = {
 
 refs.form.addEventListener('submit', handleForm);
 
-function handleForm() {
-  event.preventDefault();
+function handleForm(e) {
+  e.preventDefault();
 
   let {
     elements: { delay, step, amount },
-  } = event.currentTarget;
+  } = e.currentTarget;
 
-  delay = +delay.value;
-  step = +step.value;
-  amount = +amount.value;
+  const promiseParams = convertToNumber(amount, delay, step);
+  createPromise(promiseParams);
 
-  createPromise(amount, delay, step);
+  refs.form.reset();
 }
 
-function createPromise(position, delay, step) {
+function createPromise({ amount, delay, step }) {
   let promiseCount = 0;
+
+  if (amount < 0 || delay < 0 || step < 0) {
+    return Notify.failure('Please, choose a positive value');
+  }
 
   setTimeout(() => {
     const interval = setInterval(() => {
-      if (promiseCount === position) {
+      if (promiseCount === amount) {
         clearInterval(interval);
         return;
       }
@@ -36,11 +39,11 @@ function createPromise(position, delay, step) {
       promiseCount += 1;
 
       promiseMaker()
-        .then((position, delay) => {
-          Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+        .then((amount, delay) => {
+          Notify.success(`✅ Fulfilled promise ${amount} in ${delay}ms`);
         })
-        .catch((position, delay) => {
-          Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+        .catch((amount, delay) => {
+          Notify.failure(`❌ Rejected promise ${amount} in ${delay}ms`);
         });
     }, step);
   }, delay);
@@ -57,3 +60,11 @@ const promiseMaker = () => {
     }
   });
 };
+
+function convertToNumber(amount, delay, step) {
+  return {
+    delay: +delay.value,
+    step: +step.value,
+    amount: +amount.value,
+  };
+}
