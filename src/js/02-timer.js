@@ -39,6 +39,11 @@ refs.startBtn.addEventListener('click', handleTimer);
 function handleTimer() {
   const startTimer = setInterval(() => {
     const deltaTime = pickedDate - Date.now();
+
+    if (deltaTime < 1000) {
+      clearInterval(startTimer);
+    }
+
     const timeLeft = convertMs(deltaTime);
 
     updateTimer(timeLeft);
